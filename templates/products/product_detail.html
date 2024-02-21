@@ -15,11 +15,13 @@
       <p class="card-text">{{product.desc}}</p>
       <div class="card-text">
         <h5 class="card-text">${{ price.price }}</h5>
+
         <form
-          action="{% url 'products:create-checkout-session' price.id %}"
+          action="{% url 'products:create-checkout-session' price.id product.quantity%}"
           method="POST"
         >
           {% csrf_token %}
+          {{ form.as_p }}
           <button type="submit" class="btn btn-primary">Checkout</button>
         </form>
       </div>

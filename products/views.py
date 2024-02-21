@@ -7,8 +7,10 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic.edit import FormMixin
 
 from .models import PaymentHistory, Price, Product
+from .forms import MyForm
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -19,8 +21,9 @@ class ProductListView(ListView):
     template_name = "products/product_list.html"
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(FormMixin, DetailView):
     model = Product
+    form_class = MyForm
     context_object_name = "product"
     template_name = "products/product_detail.html"
 
@@ -37,7 +40,7 @@ class CreateStripeCheckoutSessionView(View):
 
     def post(self, request, *args, **kwargs):
         price = Price.objects.get(id=self.kwargs["pk"])
-
+        price.product.quantity = int(request.POST['quantity'])
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=["card"],
             line_items=[
