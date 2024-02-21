@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.translation import gettext_lazy as _
@@ -29,7 +30,7 @@ class Product(models.Model):
     desc = models.TextField(_("Description"), blank=True)
     thumbnail = models.ImageField(upload_to=get_image_filename, blank=True)
     url = models.URLField()
-    quantity = models.IntegerField(default=1)
+    quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
