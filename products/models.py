@@ -28,6 +28,7 @@ class Product(models.Model):
     name = models.CharField(max_length=200)
     tags = models.ManyToManyField(ProductTag, blank=True)
     desc = models.TextField(_("Description"), blank=True)
+    strain_desc = models.TextField(_("StrainDescription"), blank=True)
     thumbnail = models.ImageField(upload_to=get_image_filename, blank=True)
     url = models.URLField()
     quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
