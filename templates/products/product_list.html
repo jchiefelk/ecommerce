@@ -1,22 +1,28 @@
 {% extends "base.html" %} 
 {% block title %} Products {% endblock title%} 
-{% block content %} 
+{% block content %}
+
+<div class="container">
+<h2>Product List</h2>
+<p>All our seeds are grown by Sitconski</p>
+  
+<div class="row">
 {% for product in products %}
-<div class="card" style="width: 18rem">
-  <img
-    class="card-img-top"
-    src="{{product.thumbnail.url}}"
-    alt="Card image cap"
-  />
-  <div class="card-body">
-    <h5 class="card-title">{{product.name}}</h5>
-    <p class="card-text">{{product.desc}}</p>
-    <a
-      href="{% url 'products:product-detail' product.id %}"
-      class="btn btn-primary"
-      >View Detail</a
-    >
-  </div>
+    <div class="col-md-4" style="margin-top:10px">
+      <div class="thumbnail">
+        <a href="{% url 'products:product-detail' product.id %}" target="_blank">
+          <div class="caption">
+            <p>{{product.name}}</p>
+          </div>
+
+          <img
+              class="card-img-top"
+              src="{{product.thumbnail.url}}"
+              alt="Lights" 
+              style="width:100%">
+        </a>
+      </div>
+    </div>
+{% endfor %}
 </div>
-{% endfor %} 
 {% endblock content %}
