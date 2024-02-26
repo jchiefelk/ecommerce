@@ -53,6 +53,19 @@ class CreateStripeCheckoutSessionView(View):
         price.product.quantity = int(request.POST['quantity'])
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=["card"],
+             shipping_options=[
+                {
+                  "shipping_rate_data": {
+                    "type": "fixed_amount",
+                    "fixed_amount": {"amount": 600, "currency": "usd"},
+                    "display_name": "USPS First Class",
+                    "delivery_estimate": {
+                      "minimum": {"unit": "business_day", "value": 5},
+                      "maximum": {"unit": "business_day", "value": 7},
+                    },
+                  },
+                },
+            ],
             line_items=[
                 {
                     "price_data": {
@@ -73,6 +86,9 @@ class CreateStripeCheckoutSessionView(View):
             mode="payment",
             success_url=settings.PAYMENT_SUCCESS_URL,
             cancel_url=settings.PAYMENT_CANCEL_URL,
+            shipping_address_collection={
+                "allowed_countries": ['US']
+            },
         )
         return redirect(checkout_session.url)
 
