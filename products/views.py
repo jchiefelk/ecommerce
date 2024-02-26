@@ -74,9 +74,6 @@ class CreateStripeCheckoutSessionView(View):
                         "product_data": {
                             "name": price.product.name,
                             "description": price.product.desc,
-                            "images": [
-                                f"{settings.BACKEND_DOMAIN}/{price.product.thumbnail}"
-                            ],
                         },
                     },
                     "quantity": price.product.quantity,
