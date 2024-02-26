@@ -1,4 +1,5 @@
 import stripe
+import json
 from django.conf import settings
 from django.core.mail import send_mail
 from django.http import HttpResponse
@@ -20,6 +21,10 @@ class ProductListView(ListView):
     context_object_name = "products"
     template_name = "products/product_list.html"
 
+    def get_queryset(self):
+        # Filter prodicts with quantity > 0
+        return Product.objects.filter(quantity__gt=0)    
+
 
 class ProductDetailView(FormMixin, DetailView):
     model = Product
@@ -30,6 +35,11 @@ class ProductDetailView(FormMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(ProductDetailView, self).get_context_data()
         context["prices"] = Price.objects.filter(product=self.get_object())
+        context['form'] = self.form_class()
+
+        product = self.get_object()
+        max_quantity = product.quantity
+        context['form']['quantity'].field.widget.attrs.update({'max': max_quantity})
         return context
 
 
@@ -59,7 +69,7 @@ class CreateStripeCheckoutSessionView(View):
                     "quantity": price.product.quantity,
                 }
             ],
-            metadata={"product_id": price.product.id},
+            metadata={"product_id": price.product.id, "quantity": price.product.quantity},
             mode="payment",
             success_url=settings.PAYMENT_SUCCESS_URL,
             cancel_url=settings.PAYMENT_CANCEL_URL,
@@ -102,10 +112,19 @@ class StripeWebhookView(View):
                 from_email="test@gmail.com",
             )
 
+            # Update Product Quantity after a successful order
+            data = json.loads(request.body)
+            ordered_quantity = data['data']['object']['metadata']['quantity']
+            product = Product.objects.get(pk=product_id)
+            product_values = Product.objects.filter(pk=product_id).values()
+            old_quantity = product_values[0]['quantity']
+            product.quantity = old_quantity - int(ordered_quantity)
+            product.save()
+
             PaymentHistory.objects.create(
                 email=customer_email, product=product, payment_status="completed"
             )
-
+            
         # Can handle other events here.
 
         return HttpResponse(status=200)
