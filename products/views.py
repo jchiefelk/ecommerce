@@ -149,3 +149,7 @@ class SuccessView(TemplateView):
 
 class CancelView(TemplateView):
     template_name = "products/cancel.html"
+
+
+class ContactView(TemplateView):
+    template_name = "products/contact.html"

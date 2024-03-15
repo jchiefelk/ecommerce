@@ -7,6 +7,7 @@ from .views import (
     ProductListView,
     StripeWebhookView,
     SuccessView,
+    ContactView
 )
 
 app_name = "products"
@@ -22,4 +23,5 @@ urlpatterns = [
     path("webhooks/stripe/", StripeWebhookView.as_view(), name="stripe-webhook"),
     path("success/", SuccessView.as_view(), name="success"),
     path("cancel/", CancelView.as_view(), name="cancel"),
+    path("contact/", ContactView.as_view(), name="product")
 ]
