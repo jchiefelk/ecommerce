@@ -8,15 +8,18 @@ from decouple import config
 IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("SECRET_KEY")
+# 
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG")
+# # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = config("DEBUG")
 
 if IS_HEROKU_APP:
     SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
-    ALLOWED_HOSTS = ["*"]
+    DEBUG=os.getenv("DEBUG")
+    ALLOWED_HOSTS = ["*", "pehzhi-24719b95b534.herokuapp.com"]
 else:
+    SECRET_KEY = config("SECRET_KEY")
+    DEBUG=config("DEBUG")
     ALLOWED_HOSTS = [".localhost", "127.0.0.1", "[::1]", "0.0.0.0"]
 
 
@@ -62,7 +65,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 if IS_HEROKU_APP:
@@ -73,7 +75,7 @@ if IS_HEROKU_APP:
             'USER': os.getenv("DB_USER"),
             'PASSWORD': os.getenv("DB_PASSWORD"),
             'HOST': os.getenv("DB_HOST"),
-            'PORT': os.getenv("DB_POST"),
+            'PORT': os.getenv("DB_PORT"),
         }
     }
 else:
@@ -135,12 +137,21 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Stripe
-STRIPE_PUBLISHABLE_KEY = config("STRIPE_PUBLISHABLE_KEY")
-STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY")
-STRIPE_WEBHOOK_SECRET = config("STRIPE_WEBHOOK_SECRET")
+if IS_HEROKU_APP:
+    STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY")
+    STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+    STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
 
-BACKEND_DOMAIN = config("BACKEND_DOMAIN")
-PAYMENT_SUCCESS_URL = config("PAYMENT_SUCCESS_URL")
-PAYMENT_CANCEL_URL = config("PAYMENT_CANCEL_URL")
+    BACKEND_DOMAIN = os.getenv("BACKEND_DOMAIN")
+    PAYMENT_SUCCESS_URL = os.getenv("PAYMENT_SUCCESS_URL")
+    PAYMENT_CANCEL_URL = os.getenv("PAYMENT_CANCEL_URL")
+else:
+    STRIPE_PUBLISHABLE_KEY = config("STRIPE_PUBLISHABLE_KEY")
+    STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY_DEV")
+    STRIPE_WEBHOOK_SECRET = config("STRIPE_WEBHOOK_SECRET")
+
+    BACKEND_DOMAIN = config("BACKEND_DOMAIN")
+    PAYMENT_SUCCESS_URL = config("PAYMENT_SUCCESS_URL")
+    PAYMENT_CANCEL_URL = config("PAYMENT_CANCEL_URL")
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
