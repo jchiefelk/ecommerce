@@ -5,13 +5,19 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 from decouple import config
 
+IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG")
 
-ALLOWED_HOSTS = []
+if IS_HEROKU_APP:
+    SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+    ALLOWED_HOSTS = ["*"]
+else:
+    ALLOWED_HOSTS = [".localhost", "127.0.0.1", "[::1]", "0.0.0.0"]
 
 
 # Application definition
@@ -59,17 +65,28 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config("dbname"),                      
-        'USER': config("user"),
-        'PASSWORD': config("password"),
-        'HOST': config("host"),
-        'PORT': config("port"),
+if IS_HEROKU_APP:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv("DB_NAME"),                      
+            'USER': os.getenv("DB_USER"),
+            'PASSWORD': os.getenv("DB_PASSWORD"),
+            'HOST': os.getenv("DB_HOST"),
+            'PORT': os.getenv("DB_POST"),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config("dbname"),                      
+            'USER': config("user"),
+            'PASSWORD': config("password"),
+            'HOST': config("host"),
+            'PORT': config("port"),
+        }
+    }
 
 
 # Password validation
