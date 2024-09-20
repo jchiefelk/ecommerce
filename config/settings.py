@@ -30,8 +30,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     #Third-party Apps
-    # "corsheaders",
-    # "drf_spectacular",
     "storages",
     #Local Apps
     "products",
@@ -125,17 +123,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 # # Static and media file configuration
-# USE_S3 = config('USE_S3')
-
 if IS_HEROKU_APP:
     # aws settings
     AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
     AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
-    
-    # AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
-    # AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
-    # AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
 
     AWS_DEFAULT_ACL = 'public-read'
     AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.us-east-2.amazonaws.com'
@@ -143,7 +135,6 @@ if IS_HEROKU_APP:
     # s3 static settings
     AWS_LOCATION = 'static'
     STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
-    # STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
     STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     MEDIA_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.us-east-2.amazonaws.com"
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -156,9 +147,6 @@ else:
 # STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-# MEDIA_URL = '/mediafiles/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
-
 STORAGES = {
     # Enable WhiteNoise's GZip and Brotli compression of static assets:
     # https://whitenoise.readthedocs.io/en/latest/django.html#add-compression-and-caching-support
@@ -170,8 +158,6 @@ STORAGES = {
 # Don't store the original (un-hashed filename) version of static files, to reduce slug size:
 # https://whitenoise.readthedocs.io/en/latest/django.html#WHITENOISE_KEEP_ONLY_HASHED_FILES
 WHITENOISE_KEEP_ONLY_HASHED_FILES = True
-
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
