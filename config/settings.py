@@ -125,7 +125,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 # # Static and media file configuration
-USE_S3 = config('USE_S3')
+# USE_S3 = config('USE_S3')
 
 if IS_HEROKU_APP:
     # aws settings
