@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Price, Product, ProductTag
+from .models import Price, Product, ProductTag, Image, ImageAlbum
 
 
 class PriceAdmin(admin.StackedInline):
@@ -17,3 +17,5 @@ class ProductAdmin(admin.ModelAdmin):
 
 admin.site.register(ProductTag)
 admin.site.register(Price)
+admin.site.register(Image)
+admin.site.register(ImageAlbum)
