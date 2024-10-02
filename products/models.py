@@ -13,6 +13,23 @@ def get_image_filename(instance, filename):
     return f"products/{slug}-{filename}"
 
 
+class ImageAlbum(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+
+class Image(models.Model):
+    album = models.ManyToManyField(ImageAlbum)
+    name = models.CharField(max_length=255)
+    image = models.ImageField(upload_to='images/')
+    default = models.BooleanField(default=False)
+
+
 class ProductTag(models.Model):
     name = models.CharField(
         max_length=100, help_text=_("Designates the name of the tag.")
@@ -26,6 +43,7 @@ class ProductTag(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=200)
+    album = models.ForeignKey(ImageAlbum, blank=True, on_delete=models.CASCADE)
     tags = models.ManyToManyField(ProductTag, blank=True)
     desc = models.TextField(_("Description"), blank=True)
     strain_desc = models.TextField(_("StrainDescription"), blank=True)
