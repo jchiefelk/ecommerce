@@ -1,1 +1,1 @@
-# Integrate Stripe Payments with Django 
+Ecommerce with Django and Stripe.
