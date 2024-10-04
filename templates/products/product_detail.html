@@ -1,16 +1,12 @@
 {% extends "base.html" %} 
 {% block title %} Buy Product {% endblock title%} 
 {% block script %} <script src="https://js.stripe.com/v3/"></script> {% endblock script%} 
+
+
 {% block content %}
 <div class="card-deck">
   {% for price in prices %}
   <div class="card">
-    <img
-      class="card-img-top"
-      src="{{product.thumbnail.url}}"
-      alt="Card image cap"
-      style="width:30%"
-    />
     <div class="card-body">
       <h5 class="card-title">{{product.name}}</h5>
       <p class="card-text">{{product.desc}}</p>
@@ -30,5 +26,20 @@
     </div>
   </div>
   {% endfor %}
+
+  <div class="container mt-5">
+    <div class="row pt-5">
+        {% for image in image_model %}
+          <div class="col-md-4">
+              <div class="card mb-4 shadow-sm">
+                <img
+                  class="card-img-top"
+                  src="{{image.image.url}}"
+                />
+              </div>
+          </div>
+        {% endfor %}
+    </div>
+  </div>
 </div>
 {% endblock content %} 
