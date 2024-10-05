@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import FormMixin
 
-from .models import PaymentHistory, Price, Product
+from .models import PaymentHistory, Price, Product, Image, ImageAlbum
 from .forms import MyForm
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -36,8 +36,9 @@ class ProductDetailView(FormMixin, DetailView):
         context = super(ProductDetailView, self).get_context_data()
         context["prices"] = Price.objects.filter(product=self.get_object())
         context['form'] = self.form_class()
-
         product = self.get_object()
+        images_by_products = Image.objects.filter(album=product.album)
+        context["image_model"] = Image.objects.filter(album=product.album)
         max_quantity = product.quantity
         context['form']['quantity'].field.widget.attrs.update({'max': max_quantity})
         return context
@@ -122,7 +123,7 @@ class StripeWebhookView(View):
                 subject="Here is your product",
                 message=f"Thanks for your purchase. The URL is: {product.url}",
                 recipient_list=[customer_email],
-                from_email="test@gmail.com",
+                from_email="jchiefelk@gmail.com",
             )
 
             # Update Product Quantity after a successful order
