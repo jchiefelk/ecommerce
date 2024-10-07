@@ -12,7 +12,7 @@ IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 if IS_HEROKU_APP:
     SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
     DEBUG=os.getenv("DEBUG")
-    ALLOWED_HOSTS = ["*", "pehzhi-24719b95b534.herokuapp.com"]
+    ALLOWED_HOSTS = ["*", "pehzhi-24719b95b534.herokuapp.com", "www.easyseedco.com"]
 else:
     SECRET_KEY = config("SECRET_KEY")
     DEBUG=config("DEBUG")
